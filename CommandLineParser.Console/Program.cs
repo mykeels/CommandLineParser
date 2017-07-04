@@ -16,12 +16,17 @@ namespace CommandLineParser.Console
             if (args != null && args.Length > 0)
             {
                 CommandParser parser = new CommandParser(args);
+                try
+                {
+                    Console.WriteLine(parser.Parse<SetupModel>());
+                }
+                catch { }
                 Console.WriteLine(parser.GetHelpInfo<SetupModel>(), ConsoleColor.White);
             }
             else
             {
                 Program p = new Program();
-                p.testNameHelpInfo();
+                p.testCliParser();
             }
             
             Console.Read();
@@ -34,7 +39,7 @@ namespace CommandLineParser.Console
 
         private void testCliParser()
         {
-            CommandParser parser = new CommandParser(new string[] { "-n", "Ikechi Michael", "-f", "true", "--age", "13", "--address", JsonConvert.SerializeObject(new AddressModel()) });
+            CommandParser parser = new CommandParser(new string[] { "-n", "Ikechi Michael", "-f", "true", "--color", "1", "--age", "13", "--address", JsonConvert.SerializeObject(new AddressModel()) });
             Console.WriteLine(parser.Parse<SetupModel>());
         }
 

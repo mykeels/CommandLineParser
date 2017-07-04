@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AddressModel.cs" />
     <Compile Include="Models\SetupModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Program_Console.cs" />
