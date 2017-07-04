@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CommandLineParser.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class HelpAttribute : Attribute
     {
-        readonly string usageText;
-
-        // This is a positional argument
+        private readonly string usageText;
+        
         public HelpAttribute(string usageText)
         {
             this.usageText = usageText;
