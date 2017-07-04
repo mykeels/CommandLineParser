@@ -88,7 +88,11 @@ namespace CommandLineParser
                             }
                             else
                             {
-                                throw new Exception($"Type of [{property.Name}] is not recognized");
+                                if (property.PropertyType.BaseType.Name == "Enum")
+                                {
+                                    try { property.SetValue(ret, Enum.Parse(property.PropertyType, _dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Boolean"); }
+                                }
+                                else throw new Exception($"Type of [{property.Name}] is not recognized");
                             }
                             break;
                     }
