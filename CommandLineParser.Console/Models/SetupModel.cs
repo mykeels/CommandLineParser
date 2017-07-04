@@ -27,6 +27,13 @@ namespace CommandLineParser.Console.Models
         [Help("The user's address")]
         [Transform(typeof(SetupModel), nameof(_addressTransform))]
         public AddressModel Address { get; set; }
+        public ColorModel Color { get; set; }
+        public enum ColorModel
+        {
+            Red,
+            Green,
+            Blue
+        }
 
         public static AddressModel _addressTransform(string address)
         {
@@ -34,10 +41,5 @@ namespace CommandLineParser.Console.Models
         }
     }
 
-    public class AddressModel
-    {
-        public string HomeAddress { get; set; }
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
-    }
+    
 }
