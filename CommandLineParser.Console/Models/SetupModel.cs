@@ -38,6 +38,6 @@ namespace CommandLineParser.Console.Models
         public static AddressModel _addressTransform(string address)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<AddressModel>(address);
-        }
+        } 
     }
 }
