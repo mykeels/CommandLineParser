@@ -40,6 +40,4 @@ namespace CommandLineParser.Console.Models
             return Newtonsoft.Json.JsonConvert.DeserializeObject<AddressModel>(address);
         }
     }
-
-    
 }
