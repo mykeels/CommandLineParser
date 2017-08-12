@@ -79,7 +79,8 @@ namespace CommandLineParser
                             try { property.SetValue(ret, Convert.ToDateTime(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to DateTime"); }
                             break;
                         case "Boolean":
-                            try { property.SetValue(ret, Convert.ToBoolean(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Boolean"); }
+                            if (string.IsNullOrWhiteSpace(_dict[key])) property.SetValue(ret, true); //default to true if no value is specified cos it's a boolean
+                            else try { property.SetValue(ret, Convert.ToBoolean(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Boolean"); }
                             break;
                         default:
                             if (transform != null)

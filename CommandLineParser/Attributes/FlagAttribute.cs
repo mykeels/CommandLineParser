@@ -1,4 +1,5 @@
 ﻿using System;
+using CommandLineParser.Exceptions;
 
 namespace CommandLineParser.Attributes
 {
@@ -14,6 +15,8 @@ namespace CommandLineParser.Attributes
             this.name = name;
             this.required = required;
             this.shortName = shortName;
+            if (!string.IsNullOrWhiteSpace(shortName) && shortName.Length > 1) throw new LengthExceededException(1);
+            if (!string.IsNullOrWhiteSpace(name)) this.name = this.name.ToLower();
         }
 
         public string Name

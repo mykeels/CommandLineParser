@@ -39,7 +39,7 @@ namespace CommandLineParser.Console
 
         private void testCliParser()
         {
-            CommandParser parser = new CommandParser(new string[] { "-n", "Ikechi Michael", "-f", "true", "--color", "1", "--age", "13", "--address", JsonConvert.SerializeObject(new AddressModel()) });
+            CommandParser parser = new CommandParser(new string[] { "-n=Ikechi", " Michael", "-f", "true", "--color", "1", "--age", "13", "--address", JsonConvert.SerializeObject(new AddressModel()) });
             Console.WriteLine(parser.Parse<SetupModel>());
         }
 
