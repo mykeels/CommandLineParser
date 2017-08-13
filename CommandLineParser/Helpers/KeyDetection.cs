@@ -10,7 +10,7 @@ namespace CommandLineParser.Helpers
     public class KeyDetection
     {
         public const string HELP_KEY_REGEX = @"^(--help)|(-h)|(-\?)|(\\\?)$";
-        public const string SHORT_KEY_REGEX = @"^-(\w)+((\=)?\w+)?$";
+        public const string SHORT_KEY_REGEX = @"^-([a-zA-Z])(\w*)((\=)?\w+)?$";
         public const string LONG_KEY_REGEX = @"^--[a-z]+(=(\w)+)?$";
         private static ShortKeyDetection _shortDetector;
         private static LongKeyDetection _longDetector;
