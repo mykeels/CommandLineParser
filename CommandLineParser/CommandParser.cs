@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using CommandLineParser.Attributes;
+using CommandLineParser.Helpers;
 
 namespace CommandLineParser
 {
@@ -15,21 +16,70 @@ namespace CommandLineParser
         private const string KEY_REGEX = @"^--?(\w|\?)+$";
         private string[] _args { get; set; }
 
+        public CommandParser()
+        {
+        }
+
         public CommandParser(string[] _args = null)
         {
             this._args = _args;
         }
 
-        public Dictionary<string, string> GetDictionary(string[] args = null)
+        public Dictionary<string, string> GetDictionary(string[] args = null, Type targetType = null)
         {
             args = args ?? this._args ?? new string[] { };
             this._args = args;
             var ret = new Dictionary<string, string>();
-            bool isKey = false;
             string key = string.Empty;
             foreach (string arg in args)
             {
-                isKey = Regex.IsMatch(arg, KEY_REGEX);
+                if (KeyDetection.GetShortKeyDetector().IsKey(arg))
+                {
+                    if (KeyDetection.GetShortKeyDetector().IsJoinedToValue(arg))
+                    {
+                        string[] split = arg.Split('=');
+                        foreach(char potentialKey in split.First().AsEnumerable().Skip(1))
+                        {
+                            key = "-" + potentialKey;
+                            ret[key] = string.Empty;
+                        }
+                        ret[key] = split.Last(); //to hold the value of the key before the equals sign incase of aggregation like -asu=mykeels
+                    }
+                    else if (KeyDetection.GetShortKeyDetector().IsAggregated(arg, _getShortKeys(targetType))) //works on aggregate short keys like -sa
+                    {
+                        foreach (string potentialKey in KeyDetection.GetShortKeyDetector().GetAggregatedKeys(arg, _getShortKeys(targetType)))
+                        {
+                            ret[potentialKey] = string.Empty;
+                            key = potentialKey;
+                        }
+                    }
+                    else if (KeyDetection.GetShortKeyDetector().IsFollowedByValue(arg))
+                    {
+                        var result = KeyDetection.GetShortKeyDetector().IsFollowedByValue(arg, _getShortKeys(targetType));
+                        string[] keys = result.Item2.Key;
+                        string value = result.Item2.Value;
+                        foreach (string potentialKey in keys)
+                        {
+                            key = potentialKey;
+                            ret[key] = string.Empty;
+                        }
+                        ret[key] = value;
+                    }
+                    else
+                    {
+                        ret[arg] = string.Empty; //works for normal short keys like -u
+                        key = arg;
+                    }
+                }
+                else if (KeyDetection.GetLongKeyDetector().IsKey(arg))
+                {
+
+                }
+                else
+                {
+                    ret[key] += arg;
+                }
+                /*isKey = Regex.IsMatch(arg, KEY_REGEX);
                 if (isKey)
                 {
                     ret[arg] = string.Empty;
@@ -38,16 +88,28 @@ namespace CommandLineParser
                 else
                 {
                     ret[key] += arg;
-                }
+                }*/
             }
             return ret;
+        }
+
+        private char[] _getShortKeys(Type targetType)
+        {
+            List<string> ret = new List<string>();
+            PropertyInfo[] properties = targetType.GetProperties();
+            foreach (var property in properties)
+            {
+                var flag = property.GetCustomAttribute<FlagAttribute>();
+                ret.Add(flag.ShortName);
+            }
+            return ret.Select((key) => key.ElementAt(0)).ToArray();
         }
 
         public TData Parse<TData>(string[] args = null)
         {
             args = args ?? this._args ?? new string[] { };
             this._args = args;
-            var _dict = GetDictionary(args);
+            var _dict = GetDictionary(args, typeof(TData));
             TData ret = System.Activator.CreateInstance<TData>();
             System.Reflection.PropertyInfo[] properties = ret.GetType().GetProperties();
             foreach (var property in properties)

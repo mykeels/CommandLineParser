@@ -30,6 +30,17 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(model.username, "mykeels");
         }
 
+        [TestMethod, Description("program -asu=mykeels")]
+        public void Short_Option_Can_Be_Aggregated_And_Joined_With_Value_Via_Equals_Sign()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -asu=mykeels");
+            CommandParser parser = new CommandParser(args);
+            var model = parser.Parse<TestModel>();
+            Assert.IsTrue(model.isAdmin);
+            Assert.IsTrue(model.isSuperAdmin);
+            Assert.AreEqual(model.username, "mykeels");
+        }
+
         [TestMethod, Description("program -u mykeels")]
         public void Short_Option_Can_Be_Followed_By_Space_And_Value()
         {
@@ -39,7 +50,7 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(model.username, "mykeels");
         }
 
-        [TestMethod, Description("program -uname")]
+        [TestMethod, Description("program -umykeels")]
         public void Short_Option_Can_Be_Followed_By_Value_Immediately()
         {
             string[] args = CommandManager.CommandLineToArgs("program -umykeels");
@@ -48,10 +59,20 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(model.username, "mykeels");
         }
 
-        [TestMethod, Description("program -su")]
+        [TestMethod, Description("program -aumykeels")]
+        public void Short_Option_Can_Be_Aggregated_And_Followed_By_Value_Immediately()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -aumykeels");
+            CommandParser parser = new CommandParser(args);
+            var model = parser.Parse<TestModel>();
+            Assert.IsTrue(model.isAdmin);
+            Assert.AreEqual(model.username, "mykeels");
+        }
+
+        [TestMethod, Description("program -sa")]
         public void Short_Option_With_NO_Values_Can_Be_Aggregated()
         {
-            string[] args = CommandManager.CommandLineToArgs("program -su");
+            string[] args = CommandManager.CommandLineToArgs("program -sa");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
             Assert.IsTrue(model.isAdmin);
