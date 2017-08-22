@@ -18,7 +18,7 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program -a");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
+            Assert.IsTrue(model.isAdmin); 
         }
 
         [TestMethod, Description("program -u=mykeels")]
@@ -59,13 +59,13 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(model.username, "mykeels");
         }
 
-        [TestMethod, Description("program -aumykeels")]
+        [TestMethod, Description("program -sumykeels")]
         public void Short_Option_Can_Be_Aggregated_And_Followed_By_Value_Immediately()
         {
-            string[] args = CommandManager.CommandLineToArgs("program -aumykeels");
+            string[] args = CommandManager.CommandLineToArgs("program -saumykeels");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
+            Assert.IsTrue(model.isSuperAdmin);
             Assert.AreEqual(model.username, "mykeels");
         }
 

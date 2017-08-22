@@ -73,7 +73,17 @@ namespace CommandLineParser
                 }
                 else if (KeyDetection.GetLongKeyDetector().IsKey(arg))
                 {
-
+                    if (KeyDetection.GetLongKeyDetector().IsJoinedToValue(arg))
+                    {
+                        string[] split = arg.Split('=');
+                        key = split.First();
+                        ret[key] = split.Last();
+                    }
+                    else
+                    {
+                        ret[arg] = string.Empty;
+                        key = arg;
+                    }
                 }
                 else
                 {
@@ -153,7 +163,7 @@ namespace CommandLineParser
                             {
                                 if (property.PropertyType.BaseType.Name == "Enum")
                                 {
-                                    try { property.SetValue(ret, Enum.Parse(property.PropertyType, _dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Boolean"); }
+                                    try { property.SetValue(ret, Enum.Parse(property.PropertyType, _dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Enum"); }
                                 }
                                 else throw new Exception($"Type of [{property.Name}] is not recognized");
                             }

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\TestDescriptionAttribute.cs" />
     <Compile Include="Helpers\CommandManager.cs" />
     <Compile Include="LongOptionTests.cs" />
     <Compile Include="Models\TestModel.cs" />

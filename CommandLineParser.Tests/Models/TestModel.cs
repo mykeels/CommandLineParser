@@ -15,10 +15,39 @@ namespace CommandLineParser.Tests.Models
         [Flag("name", "n")]
         public string name { get; set; }
 
+        [Flag("role", "r")]
+        public List<Role> roles { get; set; } = new List<Role>();
+
         [Flag("admin", "a")]
-        public bool isAdmin { get; set; }
+        public bool isAdmin {
+            get
+            {
+                return roles.Any(role => role == Role.Admin);
+            }
+            set
+            {
+                if (!roles.Any(role => role == Role.Admin)) roles.Add(Role.Admin);
+            }
+        }
 
         [Flag("superadmin", "s")]
-        public bool isSuperAdmin { get; set; }
+        public bool isSuperAdmin
+        {
+            get
+            {
+                return roles.Any(role => role == Role.SuperAdmin);
+            }
+            set
+            {
+                if (!roles.Any(role => role == Role.SuperAdmin)) roles.Add(Role.SuperAdmin);
+            }
+        }
+
+        public enum Role
+        {
+            User,
+            Admin,
+            SuperAdmin
+        }
     }
 }
