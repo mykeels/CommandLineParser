@@ -25,11 +25,11 @@ namespace CommandLineParser
             this._args = _args;
         }
 
-        public Dictionary<string, string> GetDictionary(string[] args = null, Type targetType = null)
+        public Dictionary<string, List<string>> GetDictionary(string[] args = null, Type targetType = null)
         {
             args = args ?? this._args ?? new string[] { };
             this._args = args;
-            var ret = new Dictionary<string, string>();
+            var ret = new Dictionary<string, List<string>>();
             string key = string.Empty;
             foreach (string arg in args)
             {
@@ -38,18 +38,18 @@ namespace CommandLineParser
                     if (KeyDetection.GetShortKeyDetector().IsJoinedToValue(arg))
                     {
                         string[] split = arg.Split('=');
-                        foreach(char potentialKey in split.First().AsEnumerable().Skip(1))
+                        foreach (char potentialKey in split.First().AsEnumerable().Skip(1))
                         {
                             key = "-" + potentialKey;
-                            ret[key] = string.Empty;
+                            ret[key] = new List<string>();
                         }
-                        ret[key] = split.Last(); //to hold the value of the key before the equals sign incase of aggregation like -asu=mykeels
+                        ret[key].Add(split.Last()); //to hold the value of the key before the equals sign incase of aggregation like -asu=mykeels
                     }
                     else if (KeyDetection.GetShortKeyDetector().IsAggregated(arg, _getShortKeys(targetType))) //works on aggregate short keys like -sa
                     {
                         foreach (string potentialKey in KeyDetection.GetShortKeyDetector().GetAggregatedKeys(arg, _getShortKeys(targetType)))
                         {
-                            ret[potentialKey] = string.Empty;
+                            ret[potentialKey] = new List<string>();
                             key = potentialKey;
                         }
                     }
@@ -61,13 +61,13 @@ namespace CommandLineParser
                         foreach (string potentialKey in keys)
                         {
                             key = potentialKey;
-                            ret[key] = string.Empty;
+                            ret[key] = new List<string>();
                         }
-                        ret[key] = value;
+                        ret[key].Add(value);
                     }
                     else
                     {
-                        ret[arg] = string.Empty; //works for normal short keys like -u
+                        ret[arg] = new List<string>(); //works for normal short keys like -u
                         key = arg;
                     }
                 }
@@ -77,28 +77,20 @@ namespace CommandLineParser
                     {
                         string[] split = arg.Split('=');
                         key = split.First();
-                        ret[key] = split.Last();
+                        if (ret.ContainsKey(key)) ret[key].Add(split.Last());
+                        else ret[key] = new List<string>() { split.Last() };
                     }
                     else
                     {
-                        ret[arg] = string.Empty;
+                        ret[arg] = new List<string>();
                         key = arg;
                     }
                 }
                 else
                 {
-                    ret[key] += arg;
+                    if (ret.ContainsKey(key)) ret[key].Add(arg);
+                    else ret[key] = new List<string>() { arg };
                 }
-                /*isKey = Regex.IsMatch(arg, KEY_REGEX);
-                if (isKey)
-                {
-                    ret[arg] = string.Empty;
-                    key = arg;
-                }
-                else
-                {
-                    ret[key] += arg;
-                }*/
             }
             return ret;
         }
@@ -135,43 +127,49 @@ namespace CommandLineParser
                     throw new Exception($"Could not find argument key for --{property.Name} which is required");
                 }
                 else if (key != null)
-                {   
-                    switch (property.PropertyType.Name)
-                    {
-                        case "String":
-                            try { property.SetValue(ret, _dict[key]); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to String"); }
-                            break;
-                        case "Int32":
-                            try { property.SetValue(ret, Convert.ToInt32(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Int32"); }
-                            break;
-                        case "Int64":
-                            try { property.SetValue(ret, Convert.ToInt64(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Int64"); }
-                            break;
-                        case "DateTime":
-                            try { property.SetValue(ret, Convert.ToDateTime(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to DateTime"); }
-                            break;
-                        case "Boolean":
-                            if (string.IsNullOrWhiteSpace(_dict[key])) property.SetValue(ret, true); //default to true if no value is specified cos it's a boolean
-                            else try { property.SetValue(ret, Convert.ToBoolean(_dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Boolean"); }
-                            break;
-                        default:
-                            if (transform != null)
-                            {
-                                property.SetValue(ret, transform.Execute.DynamicInvoke(_dict[key]));
-                            }
-                            else
-                            {
-                                if (property.PropertyType.BaseType.Name == "Enum")
-                                {
-                                    try { property.SetValue(ret, Enum.Parse(property.PropertyType, _dict[key])); } catch { throw new Exception($"Could not convert argument value of \"{_dict[key]}\" to Enum"); }
-                                }
-                                else throw new Exception($"Type of [{property.Name}] is not recognized");
-                            }
-                            break;
-                    }
+                {
+                    _setPropertyValue<TData>(ret, property, _dict[key], transform);
                 }
             }
             return ret;
+        }
+
+        private void _setPropertyValue<TData>(TData ret, PropertyInfo property, List<string> values, TransformAttribute transform = null)
+        {
+            string flagValue = string.Join(null, values);
+            switch (property.PropertyType.Name)
+            {
+                case "String":
+                    try { property.SetValue(ret, flagValue); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to String"); }
+                    break;
+                case "Int32":
+                    try { property.SetValue(ret, Convert.ToInt32(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Int32"); }
+                    break;
+                case "Int64":
+                    try { property.SetValue(ret, Convert.ToInt64(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Int64"); }
+                    break;
+                case "DateTime":
+                    try { property.SetValue(ret, Convert.ToDateTime(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to DateTime"); }
+                    break;
+                case "Boolean":
+                    if (string.IsNullOrWhiteSpace(flagValue)) property.SetValue(ret, true); //default to true if no value is specified cos it's a boolean
+                    else try { property.SetValue(ret, Convert.ToBoolean(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Boolean"); }
+                    break;
+                default:
+                    if (transform != null)
+                    {
+                        property.SetValue(ret, transform.Execute.DynamicInvoke(flagValue));
+                    }
+                    else
+                    {
+                        if (property.PropertyType.BaseType.Name == "Enum")
+                        {
+                            try { property.SetValue(ret, Enum.Parse(property.PropertyType, flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Enum"); }
+                        }
+                        else throw new Exception($"Type of [{property.Name}] is not recognized");
+                    }
+                    break;
+            }
         }
 
         private bool _matchesCliKey(PropertyInfo property, string key)
