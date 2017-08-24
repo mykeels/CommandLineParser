@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +42,7 @@ namespace CommandLineParser
                         foreach (char potentialKey in split.First().AsEnumerable().Skip(1))
                         {
                             key = "-" + potentialKey;
-                            ret[key] = new List<string>();
+                            if (!ret.ContainsKey(key) || ret[key].Count == 0) ret[key] = new List<string>();
                         }
                         ret[key].Add(split.Last()); //to hold the value of the key before the equals sign incase of aggregation like -asu=mykeels
                     }
@@ -134,6 +135,14 @@ namespace CommandLineParser
             return ret;
         }
 
+        /// <summary>
+        /// Inserts the values in the appropriate field in the object
+        /// </summary>
+        /// <typeparam name="TData"></typeparam>
+        /// <param name="ret"></param>
+        /// <param name="property"></param>
+        /// <param name="values"></param>
+        /// <param name="transform"></param>
         private void _setPropertyValue<TData>(TData ret, PropertyInfo property, List<string> values, TransformAttribute transform = null)
         {
             string flagValue = string.Join(null, values);
@@ -155,6 +164,19 @@ namespace CommandLineParser
                     if (string.IsNullOrWhiteSpace(flagValue)) property.SetValue(ret, true); //default to true if no value is specified cos it's a boolean
                     else try { property.SetValue(ret, Convert.ToBoolean(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Boolean"); }
                     break;
+                case "List`1":
+                    Type listType = property.PropertyType;
+                    if (property.GetValue(ret) == null) property.SetValue(ret, System.Activator.CreateInstance(listType)); //instantiate the List if not instantiated
+                    if (listType.IsGenericType && listType.GetGenericTypeDefinition() == typeof(List<>))
+                    {
+                        Type targetType = listType.GetGenericArguments().First();
+                        values.ForEach((string value) =>
+                        {
+                            _setListValue((IList)property.GetValue(ret), targetType, value);
+                        });
+                    }
+                    property.GetValue(ret).GetType().GetProperties();
+                    break;
                 default:
                     if (transform != null)
                     {
@@ -169,6 +191,39 @@ namespace CommandLineParser
                         else throw new Exception($"Type of [{property.Name}] is not recognized");
                     }
                     break;
+            }
+        }
+
+        private void _setListValue(IList list, Type listTargetType, string value)
+        {
+            if (list != null)
+            {
+                switch (listTargetType.Name)
+                {
+                    case "String":
+                        try { list.Add(Convert.ToString(value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to String"); }
+                        break;
+                    case "Int32":
+                        try { list.Add(Convert.ToInt32(value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to Int32"); }
+                        break;
+                    case "Int64":
+                        try { list.Add(Convert.ToInt64(value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to Int64"); }
+                        break;
+                    case "DateTime":
+                        try { list.Add(Convert.ToDateTime(value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to DateTime"); }
+                        break;
+                    case "Boolean":
+                        if (string.IsNullOrWhiteSpace(value)) list.Add(true); //default to true if no value is specified cos it's a boolean
+                        else try { list.Add(Convert.ToBoolean(value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to Boolean"); }
+                        break;
+                    default:
+                        if (listTargetType.BaseType.Name == "Enum")
+                        {
+                            try { list.Add(Enum.Parse(listTargetType, value)); } catch { throw new Exception($"Could not convert argument value of \"{value}\" to Enum"); }
+                        }
+                        else throw new Exception($"Type of [{listTargetType.Name}] is not recognized");
+                        break;
+                }
             }
         }
 

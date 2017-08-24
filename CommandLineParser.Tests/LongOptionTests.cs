@@ -79,8 +79,19 @@ namespace CommandLineParser.Tests
         }
 
         [TestMethod]
+        [TestDescription("program --name mykeels --admin", true)]
+        public void Long_Option_Can_Have_Space_Separated_Values_1()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program --name mykeels --admin");
+            CommandParser parser = new CommandParser(args);
+            var model = parser.Parse<TestModel>();
+            Assert.IsTrue(model.isAdmin);
+            Assert.AreEqual(model.name, "mykeels");
+        }
+
+        [TestMethod]
         [TestDescription("program --name=mykeels --admin", true)]
-        public void Long_Option_Can_Have_Space_Separated_Values()
+        public void Long_Option_Can_Have_Space_Separated_Values_2()
         {
             string[] args = CommandManager.CommandLineToArgs("program --name=mykeels --admin");
             CommandParser parser = new CommandParser(args);
