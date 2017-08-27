@@ -1,13 +1,13 @@
-$major = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLineParser.dll").GetName().Version.Major
+$major = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLine.Parser.dll").GetName().Version.Major
 
-$minor = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLineParser.dll").GetName().Version.Minor
+$minor = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLine.Parser.dll").GetName().Version.Minor
 
 
-$build = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLineParser.dll").GetName().Version.Build
+$build = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLine.Parser.dll").GetName().Version.Build
 
-$revision = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLineParser.dll").GetName().Version.Revision
+$revision = [System.Reflection.Assembly]::LoadFrom("../bin/debug/CommandLine.Parser.dll").GetName().Version.Revision
 
-$infoVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("../bin/debug/commandlineparser.dll").ProductVersion
+$infoVersion = [System.Diagnostics.FileVersionInfo]::GetVersionInfo("../bin/debug/commandline.parser.dll").ProductVersion
 
 echo $infoVersion
 
