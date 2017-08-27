@@ -11,17 +11,16 @@ using CommandLineParser.Tests.Attributes;
 namespace CommandLineParser.Tests
 {
     [TestClass]
-    public class TerminatorTests
-    { 
+    public class NonOptionTests
+    {
         [TestMethod]
-        [TestDescription("program -- Hello World")]
-        public void Terminators_Are_Bound_To_Extras()
+        [TestDescription("program hello")]
+        public void NonOptions_Are_Bound_To_Options()
         {
-            string[] args = CommandManager.CommandLineToArgs("program -- Hello World");
+            string[] args = CommandManager.CommandLineToArgs("program hello");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            CollectionAssert.Contains(model.Extras, "Hello");
-            CollectionAssert.Contains(model.Extras, "World");
+            CollectionAssert.Contains(model.Options, "hello");
         }
     }
 }

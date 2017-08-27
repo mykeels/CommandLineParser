@@ -8,6 +8,7 @@ namespace CommandLineParser
 {
     public interface IConfigModel
     {
-        string[] extras { get; set; }
+        string[] Options { get; set; }
+        string[] Extras { get; set; }
     }
 }

@@ -44,7 +44,8 @@ namespace CommandLineParser.Tests.Models
         }
 
         public string gender { get; set; }
-        public string[] extras { get; set; }
+        public string[] Extras { get; set; }
+        public string[] Options { get; set; }
 
         public enum Role
         {

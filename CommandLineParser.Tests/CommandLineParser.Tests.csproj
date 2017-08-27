@@ -45,6 +45,7 @@
     <Compile Include="Helpers\CommandManager.cs" />
     <Compile Include="LongOptionTests.cs" />
     <Compile Include="Models\TestModel.cs" />
+    <Compile Include="NonOptionTests.cs" />
     <Compile Include="ShortOptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TerminatorTests.cs" />

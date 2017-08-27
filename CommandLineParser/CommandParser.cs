@@ -89,11 +89,12 @@ namespace CommandLineParser
                 }
                 else if (arg == "--") //terminator
                 {
-                    ret[arg] = new List<string>();
+                    if (!ret.ContainsKey(arg)) ret[arg] = new List<string>();
                     key = arg;
                 }
                 else //non-option
                 {
+                    if (key == "" && !ret.ContainsKey(key)) ret[key] = new List<string>(); //options
                     ret[key].Add(arg);
                 }
             }
@@ -135,9 +136,13 @@ namespace CommandLineParser
                 {
                     if (key == "--")
                     {
-                        if (typeof(TData).GetInterfaces().Contains(typeof(IConfigModel))) ((IConfigModel)ret).extras = _dict[key].ToArray();
+                        if (typeof(TData).GetInterfaces().Contains(typeof(IConfigModel))) ((IConfigModel)ret).Extras = _dict[key].ToArray();
                     }
                     else _setPropertyValue<TData>(ret, property, _dict[key], transform);
+                }
+                if (_dict.ContainsKey(""))
+                {
+                    if (typeof(TData).GetInterfaces().Contains(typeof(IConfigModel))) ((IConfigModel)ret).Options = _dict[""].ToArray();
                 }
             }
             return ret;
