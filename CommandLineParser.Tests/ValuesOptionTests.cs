@@ -15,7 +15,7 @@ namespace CommandLineParser.Tests
     {
         [TestMethod]
         [TestDescription("program --role=SuperAdmin --role=Admin")]
-        public void Values_Long_Option_Can_Have_Multiple_Values()
+        public void Values_Long_Option_Equals_Separated_Values_Can_Have_Multiple_Values()
         {
             string[] args = CommandManager.CommandLineToArgs("program --role=SuperAdmin --role=Admin");
             CommandParser parser = new CommandParser(args);
@@ -26,9 +26,31 @@ namespace CommandLineParser.Tests
 
         [TestMethod]
         [TestDescription("program -r=SuperAdmin -r=Admin")]
-        public void Values_Short_Option_Can_Have_Multiple_Values()
+        public void Values_Short_Option_Equals_Separated_Values_Can_Have_Multiple_Values()
         {
             string[] args = CommandManager.CommandLineToArgs("program -r=SuperAdmin -r=Admin");
+            CommandParser parser = new CommandParser(args);
+            var model = parser.Parse<TestModel>();
+            Assert.IsTrue(model.isAdmin);
+            Assert.IsTrue(model.isSuperAdmin);
+        }
+
+        [TestMethod]
+        [TestDescription("program --role SuperAdmin --role Admin")]
+        public void Values_Long_Option_Space_Separated_Values_Can_Have_Multiple_Values()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program --role SuperAdmin --role Admin");
+            CommandParser parser = new CommandParser(args);
+            var model = parser.Parse<TestModel>();
+            Assert.IsTrue(model.isAdmin);
+            Assert.IsTrue(model.isSuperAdmin);
+        }
+
+        [TestMethod]
+        [TestDescription("program -r SuperAdmin -r Admin")]
+        public void Values_Short_Option_Space_Separated_Values_Can_Have_Multiple_Values()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -r SuperAdmin -r Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
             Assert.IsTrue(model.isAdmin);

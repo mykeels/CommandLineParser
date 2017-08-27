@@ -62,13 +62,13 @@ namespace CommandLineParser
                         foreach (string potentialKey in keys)
                         {
                             key = potentialKey;
-                            ret[key] = new List<string>();
+                            if (!ret.ContainsKey(key) || ret[key].Count == 0) ret[key] = new List<string>();
                         }
                         ret[key].Add(value);
                     }
                     else
                     {
-                        ret[arg] = new List<string>(); //works for normal short keys like -u
+                        if (!ret.ContainsKey(key) || ret[key].Count == 0) ret[arg] = new List<string>(); //works for normal short keys like -u
                         key = arg;
                     }
                 }
@@ -83,14 +83,13 @@ namespace CommandLineParser
                     }
                     else
                     {
-                        ret[arg] = new List<string>();
+                        if (!ret.ContainsKey(arg)) ret[arg] = new List<string>();
                         key = arg;
                     }
                 }
                 else
                 {
-                    if (ret.ContainsKey(key)) ret[key].Add(arg);
-                    else ret[key] = new List<string>() { arg };
+                    ret[key].Add(arg);
                 }
             }
             return ret;

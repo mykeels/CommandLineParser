@@ -71,7 +71,7 @@ namespace CommandLineParser.Helpers
             public bool IsAggregated(string potentialKey, char[] requiredKeyList)
             {
                 var keys = potentialKey.AsEnumerable().Skip(1);
-                return keys.All(key => requiredKeyList.Contains(key));
+                return keys.Count() > 1 && keys.All(key => requiredKeyList.Contains(key));
             }
 
             public string[] GetAggregatedKeys(string potentialKey, char[] requiredKeyList)
