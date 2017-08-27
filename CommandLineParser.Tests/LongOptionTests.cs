@@ -75,7 +75,7 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --name=mykeels");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.AreEqual(model.name, "mykeels");
+            Assert.AreEqual(model.Name, "mykeels");
         }
 
         [TestMethod]
@@ -85,8 +85,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --name mykeels --admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.AreEqual(model.name, "mykeels");
+            Assert.IsTrue(model.IsAdmin);
+            Assert.AreEqual(model.Name, "mykeels");
         }
 
         [TestMethod]
@@ -96,8 +96,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --name=mykeels --admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.AreEqual(model.name, "mykeels");
+            Assert.IsTrue(model.IsAdmin);
+            Assert.AreEqual(model.Name, "mykeels");
         }
     }
 }

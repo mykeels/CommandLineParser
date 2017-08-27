@@ -20,8 +20,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --role=SuperAdmin --role=Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
 
         [TestMethod]
@@ -31,8 +31,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program -r=SuperAdmin -r=Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
 
         [TestMethod]
@@ -42,8 +42,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --role SuperAdmin --role Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
 
         [TestMethod]
@@ -53,8 +53,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program -r SuperAdmin -r Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
 
         [TestMethod]
@@ -64,8 +64,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program --role SuperAdmin Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
 
         [TestMethod]
@@ -75,8 +75,8 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program -r SuperAdmin Admin");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
-            Assert.IsTrue(model.isAdmin);
-            Assert.IsTrue(model.isSuperAdmin);
+            Assert.IsTrue(model.IsAdmin);
+            Assert.IsTrue(model.IsSuperAdmin);
         }
     }
 }

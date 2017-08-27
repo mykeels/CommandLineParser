@@ -7,8 +7,7 @@ using CommandLineParser.Attributes;
 
 namespace CommandLineParser.Tests.Models
 {
-    [Help("== This is a Test Model ==")]
-    public class TestModel: IConfigModel
+    public class TestNoHelpTextModel
     {
         [Flag("username", "u")]
         [Help("This is the Username property")]
@@ -21,7 +20,8 @@ namespace CommandLineParser.Tests.Models
         public List<Role> Roles { get; set; } = new List<Role>();
 
         [Flag("admin", "a")]
-        public bool IsAdmin {
+        public bool IsAdmin
+        {
             get
             {
                 return Roles.Any(role => role == Role.Admin);

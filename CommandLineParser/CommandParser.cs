@@ -104,13 +104,17 @@ namespace CommandLineParser
         private char[] _getShortKeys(Type targetType)
         {
             List<string> ret = new List<string>();
-            PropertyInfo[] properties = targetType.GetProperties();
-            foreach (var property in properties)
+            if (targetType != null)
             {
-                var flag = property.GetCustomAttribute<FlagAttribute>();
-                if (flag != null) ret.Add(flag.ShortName);
+                PropertyInfo[] properties = targetType.GetProperties();
+                foreach (var property in properties)
+                {
+                    var flag = property.GetCustomAttribute<FlagAttribute>();
+                    if (flag != null) ret.Add(flag.ShortName);
+                }
+                return ret.Select((key) => key.ElementAt(0)).ToArray();
             }
-            return ret.Select((key) => key.ElementAt(0)).ToArray();
+            else return new char[] { };
         }
 
         public TData Parse<TData>(string[] args = null)
@@ -278,7 +282,7 @@ namespace CommandLineParser
                     {
                         //first help text in argument
                         var help = typeof(TData).GetCustomAttribute<HelpAttribute>();
-                        if (help != null) return $"========== Help Information ==========\n {help.Usage}\n\n" +
+                        return $"========== Help Information ==========\n {help?.Usage}\n\n" +
                                                 $"{System.AppDomain.CurrentDomain.FriendlyName} " +
                                                 String.Join(" ", System.Activator.CreateInstance<TData>().GetType().GetProperties().Select(prop => _getPropKeyHelpInfo(prop)).ToArray()) +
                                                 "\n========== End Help Information ==========";

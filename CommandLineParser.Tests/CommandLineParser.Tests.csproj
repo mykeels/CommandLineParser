@@ -43,8 +43,10 @@
   <ItemGroup>
     <Compile Include="Attributes\TestDescriptionAttribute.cs" />
     <Compile Include="Helpers\CommandManager.cs" />
+    <Compile Include="HelpTests.cs" />
     <Compile Include="LongOptionTests.cs" />
     <Compile Include="Models\TestModel.cs" />
+    <Compile Include="Models\TestNoHelpTextModel.cs" />
     <Compile Include="NonOptionTests.cs" />
     <Compile Include="ShortOptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
