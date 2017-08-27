@@ -34,7 +34,7 @@ namespace CommandLineParser
             string key = string.Empty;
             foreach (string arg in args)
             {
-                if (KeyDetection.GetShortKeyDetector().IsKey(arg))
+                if (KeyDetection.GetShortKeyDetector().IsKey(arg)) //short-option
                 {
                     if (KeyDetection.GetShortKeyDetector().IsJoinedToValue(arg))
                     {
@@ -72,7 +72,7 @@ namespace CommandLineParser
                         key = arg;
                     }
                 }
-                else if (KeyDetection.GetLongKeyDetector().IsKey(arg))
+                else if (KeyDetection.GetLongKeyDetector().IsKey(arg)) //long option
                 {
                     if (KeyDetection.GetLongKeyDetector().IsJoinedToValue(arg))
                     {
@@ -87,7 +87,12 @@ namespace CommandLineParser
                         key = arg;
                     }
                 }
-                else
+                else if (arg == "--") //terminator
+                {
+                    ret[arg] = new List<string>();
+                    key = arg;
+                }
+                else //non-option
                 {
                     ret[key].Add(arg);
                 }
@@ -102,7 +107,7 @@ namespace CommandLineParser
             foreach (var property in properties)
             {
                 var flag = property.GetCustomAttribute<FlagAttribute>();
-                ret.Add(flag.ShortName);
+                if (flag != null) ret.Add(flag.ShortName);
             }
             return ret.Select((key) => key.ElementAt(0)).ToArray();
         }
@@ -120,7 +125,7 @@ namespace CommandLineParser
                 var help = property.GetCustomAttribute<HelpAttribute>();
                 var transform = property.GetCustomAttribute<TransformAttribute>();
                 flag = flag ?? new FlagAttribute(property.Name);
-                string keyPattern = $@"(^-{flag.ShortName}$)|(^--{flag.Name}$)";
+                string keyPattern = $@"(^-{flag.ShortName}$)|(^--{flag.Name}$)|^--$";
                 string key = _dict.Keys.FirstOrDefault(_key => Regex.IsMatch(_key, keyPattern, RegexOptions.IgnoreCase));
                 if (key == null && flag.Required)
                 {
@@ -128,7 +133,11 @@ namespace CommandLineParser
                 }
                 else if (key != null)
                 {
-                    _setPropertyValue<TData>(ret, property, _dict[key], transform);
+                    if (key == "--")
+                    {
+                        if (typeof(TData).GetInterfaces().Contains(typeof(IConfigModel))) ((IConfigModel)ret).extras = _dict[key].ToArray();
+                    }
+                    else _setPropertyValue<TData>(ret, property, _dict[key], transform);
                 }
             }
             return ret;

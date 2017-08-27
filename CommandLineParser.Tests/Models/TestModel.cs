@@ -7,7 +7,7 @@ using CommandLineParser.Attributes;
 
 namespace CommandLineParser.Tests.Models
 {
-    public class TestModel
+    public class TestModel: IConfigModel
     {
         [Flag("username", "u")]
         public string username { get; set; }
@@ -42,6 +42,9 @@ namespace CommandLineParser.Tests.Models
                 if (!roles.Any(role => role == Role.SuperAdmin)) roles.Add(Role.SuperAdmin);
             }
         }
+
+        public string gender { get; set; }
+        public string[] extras { get; set; }
 
         public enum Role
         {

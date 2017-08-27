@@ -10,7 +10,7 @@ Here are a few examples:
 
 #### Default Option-Name Mode
 
-Take this simple program for instance:
+Take this simple program for example:
 
 ```bat
 copy.exe --source "./my-stuff.txt" --destination "./new-folder"

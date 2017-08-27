@@ -47,6 +47,7 @@
     <Compile Include="Models\TestModel.cs" />
     <Compile Include="ShortOptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TerminatorTests.cs" />
     <Compile Include="ValuesOptionTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -47,6 +47,7 @@
     <Compile Include="Exceptions\LengthExceededException.cs" />
     <Compile Include="Helpers\KeyDetection.cs" />
     <Compile Include="Helpers\TransformDelegate.cs" />
+    <Compile Include="IConfigModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
