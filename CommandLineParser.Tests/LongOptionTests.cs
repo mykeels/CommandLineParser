@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CommandLineParser.Tests.Helpers;
 using CommandLineParser.Tests.Models;
 using CommandLineParser.Tests.Attributes;
+using Newtonsoft.Json;
 
 namespace CommandLineParser.Tests
 {
@@ -98,6 +99,14 @@ namespace CommandLineParser.Tests
             var model = parser.Parse<TestModel>();
             Assert.IsTrue(model.IsAdmin);
             Assert.AreEqual(model.Name, "mykeels");
+        }
+
+        [TestMethod]
+        [TestDescription("program --address \"{\"HomeAddress\":\"London\",\"Latitude\":1.5678,\"Longitude\":0.2345}\"")]
+        public void Long_Option_With_Complex_Json_Definition()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program --address \"{\"HomeAddress\":\"London\",\"Latitude\":1.5678,\"Longitude\":0.2345}\"");
+            Console.WriteLine(JsonConvert.SerializeObject(args));
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommandLineParser.Attributes;
+using Newtonsoft.Json;
 
 namespace CommandLineParser.Tests.Models
 {
@@ -50,11 +51,19 @@ namespace CommandLineParser.Tests.Models
         public string[] Extras { get; set; }
         public string[] Options { get; set; }
 
+        [Flag("address"), Transform(typeof(TestModel), nameof(_addressTransform))]
+        public AddressModel Address { get; set; }
+
         public enum Role
         {
             User,
             Admin,
             SuperAdmin
+        }
+
+        public static AddressModel _addressTransform(string address)
+        {
+            return JsonConvert.DeserializeObject<AddressModel>(address);
         }
     }
 }

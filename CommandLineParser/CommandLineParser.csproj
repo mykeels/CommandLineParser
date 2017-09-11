@@ -10,6 +10,7 @@
     <RootNamespace>CommandLineParser</RootNamespace>
     <AssemblyName>CommandLine.Parser</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <!--<TargetFrameworks>net46;net452</TargetFrameworks>-->
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>

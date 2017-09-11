@@ -112,7 +112,7 @@ namespace CommandLineParser
                     var flag = property.GetCustomAttribute<FlagAttribute>();
                     if (flag != null) ret.Add(flag.ShortName);
                 }
-                return ret.Select((key) => key.ElementAt(0)).ToArray();
+                return ret.Where((key) => !string.IsNullOrEmpty(key)).Select((key) => key.ElementAt(0)).ToArray();
             }
             else return new char[] { };
         }
@@ -122,8 +122,8 @@ namespace CommandLineParser
             args = args ?? this._args ?? new string[] { };
             this._args = args;
             var _dict = GetDictionary(args, typeof(TData));
-            TData ret = System.Activator.CreateInstance<TData>();
-            System.Reflection.PropertyInfo[] properties = ret.GetType().GetProperties();
+            TData ret = Activator.CreateInstance<TData>();
+            PropertyInfo[] properties = ret.GetType().GetProperties();
             foreach (var property in properties)
             {
                 var flag = property.GetCustomAttribute<FlagAttribute>();
