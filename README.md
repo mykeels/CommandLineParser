@@ -4,6 +4,12 @@ A simple .NET CLI arguments parser library using C# attributes.
 
 Tired of reading the `string[] args` passed to your main method yourself? This simple library lets you parse the arguments into any standard .NET object.
 
+### Installation
+
+```
+dotnet add package CommandLine.Parser
+```
+
 ### Examples
 
 Here are a few examples:

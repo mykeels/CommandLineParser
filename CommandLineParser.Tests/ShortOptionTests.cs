@@ -47,6 +47,7 @@ namespace CommandLineParser.Tests
             string[] args = CommandManager.CommandLineToArgs("program -u mykeels");
             CommandParser parser = new CommandParser(args);
             var model = parser.Parse<TestModel>();
+            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(model));
             Assert.AreEqual(model.Username, "mykeels");
         }
 
