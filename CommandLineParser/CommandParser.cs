@@ -94,8 +94,8 @@ namespace CommandLineParser
                 }
                 else //non-option
                 {
-                    if (key == "" && !ret.ContainsKey(key)) ret[key] = new List<string>(); //options
-                    ret[key].Add(arg);
+                    if (key == "" && !ret.ContainsKey(key)) ret.Add(key, new List<string>()); //options
+                    else ret[key].Add(arg);
                 }
             }
             return ret;
@@ -178,6 +178,7 @@ namespace CommandLineParser
                     try { property.SetValue(ret, Convert.ToDateTime(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to DateTime"); }
                     break;
                 case "Boolean":
+                    Console.WriteLine("Boolean Found");
                     if (string.IsNullOrWhiteSpace(flagValue)) property.SetValue(ret, true); //default to true if no value is specified cos it's a boolean
                     else try { property.SetValue(ret, Convert.ToBoolean(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Boolean"); }
                     break;

@@ -9,35 +9,42 @@ namespace CommandLineParser.Tests.Helpers
 {
     public class CommandManager
     {
-        [DllImport("shell32.dll", SetLastError = true)]
-        static extern IntPtr CommandLineToArgvW([MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
+        private static string trimMatchingQuotes(string input, char quote) {
+            if ((input.Length >= 2) && 
+                (input[0] == quote) && (input[input.Length - 1] == quote))
+                return input.Substring(1, input.Length - 2);
 
-        private static string removeProgramName(string commandLine)
-        {
-            return string.Join(" ", commandLine.Split(new string[] { " " }, StringSplitOptions.None).AsEnumerable().Skip(1));
+            return input;
+        }
+
+        private static IEnumerable<string> split(string input, Func<char, bool> fn) {
+            int nextPiece = 0;
+
+            for (int c = 0; c < input.Length; c++)
+            {
+                if (fn(input[c]))
+                {
+                    yield return input.Substring(nextPiece, c - nextPiece);
+                    nextPiece = c + 1;
+                }
+            }
+
+            yield return input.Substring(nextPiece);
         }
 
         public static string[] CommandLineToArgs(string commandLine)
         {
-            int argc;
-            var argv = CommandLineToArgvW(removeProgramName(commandLine), out argc);
-            if (argv == IntPtr.Zero)
-                throw new System.ComponentModel.Win32Exception();
-            try
-            {
-                var args = new string[argc];
-                for (var i = 0; i < args.Length; i++)
-                {
-                    var p = Marshal.ReadIntPtr(argv, i * IntPtr.Size);
-                    args[i] = Marshal.PtrToStringUni(p);
-                }
+            bool inQuotes = false;
 
-                return args;
-            }
-            finally
-            {
-                Marshal.FreeHGlobal(argv);
-            }
+            return split(commandLine, (c) =>
+                            {
+                                if (c == '\"')
+                                    inQuotes = !inQuotes;
+
+                                return !inQuotes && c == ' ';
+                            })
+                            .Select(arg => trimMatchingQuotes(arg.Trim(), '\"'))
+                            .Where(arg => !string.IsNullOrEmpty(arg)).ToArray();
         }
     }
 }
