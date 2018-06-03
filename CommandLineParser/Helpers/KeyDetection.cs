@@ -10,8 +10,8 @@ namespace CommandLineParser.Helpers
     public class KeyDetection
     {
         public const string HELP_KEY_REGEX = @"^(--help)|(-h)|(-\?)|(\\\?)$";
-        public const string SHORT_KEY_REGEX = @"^-([a-zA-Z])(\w*)((\=)?\w+)?$";
-        public const string LONG_KEY_REGEX = @"^--[a-z]+(=(\w)+)?$";
+        public const string SHORT_KEY_REGEX = @"^-([a-zA-Z])(\w*)(=([a-zA-Z0-9\.])+)?$";
+        public const string LONG_KEY_REGEX = @"^--[a-z][a-z]*(-?([a-z]+))(=([a-zA-Z0-9\.])+)?$";
         private static ShortKeyDetection _shortDetector;
         private static LongKeyDetection _longDetector;
 
@@ -29,7 +29,7 @@ namespace CommandLineParser.Helpers
 
         public class ShortKeyDetection
         {
-            private const string KEY_JOINS_VALUE_REGEX = @"=\w+$"; //-u=name
+            private const string KEY_JOINS_VALUE_REGEX = @"(=([a-zA-Z0-9\.])+)$"; //-u=name
             public bool IsKey(string potentialKey)
             {
                 return Regex.IsMatch(potentialKey, KeyDetection.SHORT_KEY_REGEX);
@@ -83,7 +83,7 @@ namespace CommandLineParser.Helpers
 
         public class LongKeyDetection
         {
-            private const string KEY_JOINS_VALUE_REGEX = @"=\w+$"; //--user=name
+            private const string KEY_JOINS_VALUE_REGEX = @"=([a-zA-Z0-9\.])+$"; //--user=name
             public bool IsKey(string potentialKey)
             {
                 return Regex.IsMatch(potentialKey, KeyDetection.LONG_KEY_REGEX);
