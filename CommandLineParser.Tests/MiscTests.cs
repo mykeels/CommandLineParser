@@ -28,6 +28,7 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(100, model.NoOfIterations);
             Assert.AreEqual("../project/folder", model.Output);
         }
+
         [TestMethod]
         [TestDescription("program -d=1 -r=5 -x=0.7 -i 100 --output ../project/folder")]
         public void Test_That_Short_Names_Work()
@@ -41,6 +42,66 @@ namespace CommandLineParser.Tests
             Assert.AreEqual(0.7, model.SwitchProbability);
             Assert.AreEqual(100, model.NoOfIterations);
             Assert.AreEqual("../project/folder", model.Output);
+        }
+        
+        [TestMethod]
+        [TestDescription("program -d=1 -r=5 -x=0.7 -i 100 -o=../project/folder")]
+        public void Test_That_Short_Names_With_Complex_Joins_Work()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -d=1 -r=5 -x=0.7 -i 100 -o=../project/folder");
+            CommandParser parser = new CommandParser(args);
+            Console.WriteLine(JsonConvert.SerializeObject(parser.GetDictionary()));
+            var model = parser.Parse<MiscTestModel>();
+            Assert.AreEqual(1, model.Dataset);
+            Assert.AreEqual(5, model.Runs);
+            Assert.AreEqual(0.7, model.SwitchProbability);
+            Assert.AreEqual(100, model.NoOfIterations);
+            Assert.AreEqual("../project/folder", model.Output);
+        }
+        
+        [TestMethod]
+        [TestDescription("program -d=1 -r=5 -x=0.7 -i 100 --output=../project/folder")]
+        public void Test_That_Long_Names_With_Complex_Joins_Work()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -d=1 -r=5 -x=0.7 -i 100 --output=../project/folder");
+            CommandParser parser = new CommandParser(args);
+            Console.WriteLine(JsonConvert.SerializeObject(parser.GetDictionary()));
+            var model = parser.Parse<MiscTestModel>();
+            Assert.AreEqual(1, model.Dataset);
+            Assert.AreEqual(5, model.Runs);
+            Assert.AreEqual(0.7, model.SwitchProbability);
+            Assert.AreEqual(100, model.NoOfIterations);
+            Assert.AreEqual("../project/folder", model.Output);
+        }
+        
+        [TestMethod]
+        [TestDescription("program -d=1 -r=5 -x=0.7 -i 100 -o=\"../project/folder\"")]
+        public void Test_That_Short_Names_With_Complex_Joins_And_Quotes_Work()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -d=1 -r=5 -x=0.7 -i 100 -o=\"../project/folder\"");
+            CommandParser parser = new CommandParser(args);
+            Console.WriteLine(JsonConvert.SerializeObject(parser.GetDictionary()));
+            var model = parser.Parse<MiscTestModel>();
+            Assert.AreEqual(1, model.Dataset);
+            Assert.AreEqual(5, model.Runs);
+            Assert.AreEqual(0.7, model.SwitchProbability);
+            Assert.AreEqual(100, model.NoOfIterations);
+            Assert.AreEqual("../project/folder", model.Output?.Trim('"'));
+        }
+        
+        [TestMethod]
+        [TestDescription("program -d=1 -r=5 -x=0.7 -i 100 --output=\"../project/folder\"")]
+        public void Test_That_Long_Names_With_Complex_Joins_And_Quotes_Work()
+        {
+            string[] args = CommandManager.CommandLineToArgs("program -d=1 -r=5 -x=0.7 -i 100 --output=\"../project/folder\"");
+            CommandParser parser = new CommandParser(args);
+            Console.WriteLine(JsonConvert.SerializeObject(parser.GetDictionary()));
+            var model = parser.Parse<MiscTestModel>();
+            Assert.AreEqual(1, model.Dataset);
+            Assert.AreEqual(5, model.Runs);
+            Assert.AreEqual(0.7, model.SwitchProbability);
+            Assert.AreEqual(100, model.NoOfIterations);
+            Assert.AreEqual("../project/folder", model.Output?.Trim('"'));
         }
     }
 }
