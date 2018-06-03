@@ -95,7 +95,10 @@ namespace CommandLineParser
                 else //non-option
                 {
                     if (key == "" && !ret.ContainsKey(key)) ret.Add(key, new List<string>()); //options
-                    else ret[key].Add(arg);
+                    else {
+                        if (ret.ContainsKey(key)) ret[key].Add(arg);
+                        else ret.Add(key, new List<string>() { arg });
+                    }
                 }
             }
             return ret;
@@ -176,6 +179,9 @@ namespace CommandLineParser
                     break;
                 case "DateTime":
                     try { property.SetValue(ret, Convert.ToDateTime(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to DateTime"); }
+                    break;
+                case "Double":
+                    try { property.SetValue(ret, Convert.ToDouble(flagValue)); } catch { throw new Exception($"Could not convert argument value of \"{flagValue}\" to Double"); }
                     break;
                 case "Boolean":
                     Console.WriteLine("Boolean Found");
